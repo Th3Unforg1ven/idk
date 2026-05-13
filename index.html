@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>BIOCODED // PAMYEL</title>
+<script>
+(function(){
+  function hasClass(el,name){return (' '+el.className+' ').indexOf(' '+name+' ')>-1;}
+  function addClass(el,name){if(!hasClass(el,name))el.className=(el.className?el.className+' ':'')+name;}
+  function removeClass(el,name){el.className=(' '+el.className+' ').replace(' '+name+' ',' ').replace(/^\s+|\s+$/g,'');}
+  window.show=function(id){
+    var nodes=document.querySelectorAll('.screen,.arc-reveal-screen,.sheet');
+    for(var i=0;i<nodes.length;i++)addClass(nodes[i],'hidden');
+    var target=document.getElementById(id);
+    if(target)removeClass(target,'hidden');
+    window.scrollTo(0,0);
+  };
+  window.__biocodedRun=function(e){
+    if(e&&e.preventDefault)e.preventDefault();
+    window.show('s-intro');
+    return false;
+  };
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:#000;min-height:100vh;min-height:100dvh;width:100%;font-family:'Share Tech Mono',monospace;color:#00ff88;overflow-x:hidden;}
+.scanlines{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,136,0.012) 2px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:200;}
+
+/* UTILS */
+.hidden{display:none!important;}
+.screen{height:100vh;max-height:100vh;height:100dvh;max-height:100dvh;display:flex;flex-direction:column;padding:24px 20px 20px;overflow:hidden;}
+
+/* GLITCH */
+.glitch{font-family:'Orbitron',sans-serif;font-weight:900;color:#fff;letter-spacing:5px;line-height:1;position:relative;display:inline-block;}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;color:#fff;}
+.glitch::before{animation:gb 4s infinite;clip-path:polygon(0 15%,100% 15%,100% 35%,0 35%);}
+.glitch::after{animation:ga 4s infinite;clip-path:polygon(0 55%,100% 55%,100% 75%,0 75%);}
+@keyframes gb{0%,85%,100%{transform:translate(0);opacity:0;}86%{transform:translate(-4px,0);opacity:0.6;}88%{transform:translate(4px,0);opacity:0.4;}90%{opacity:0;}}
+@keyframes ga{0%,88%,100%{transform:translate(0);opacity:0;}89%{transform:translate(4px,0);opacity:0.5;}91%{transform:translate(-4px,0);opacity:0.3;}93%{opacity:0;}}
+
+/* BOOT */
+.boot-log{flex:1;padding-top:8px;}
+.boot-ln{font-size:14px;color:rgba(0,255,136,0.45);line-height:1.9;}
+.boot-ln.b{color:#fff;font-size:15px;}
+.boot-inp-row{display:flex;align-items:center;gap:8px;border-top:1px solid rgba(0,255,136,0.15);padding-top:16px;margin-top:12px;}
+.boot-prompt{color:rgba(0,255,136,0.5);font-size:12px;flex-shrink:0;}
+.boot-inp{flex:1;background:transparent;border:none;outline:none;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:15px;caret-color:#00ff88;}
+.boot-btn{background:transparent;border:1px solid rgba(0,255,136,0.2);color:rgba(0,255,136,0.5);font-family:'Share Tech Mono',monospace;font-size:11px;padding:10px 14px;cursor:pointer;letter-spacing:1px;}
+.boot-btn:active{border-color:#00ff88;color:#00ff88;}
+
+/* INTRO */
+.intro-status{font-size:13px;color:rgba(0,255,136,0.4);line-height:1.9;}
+.intro-transmission{border-left:2px solid rgba(0,255,136,0.2);padding-left:16px;margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+.intro-h{font-size:17px;color:rgba(255,255,255,0.9);line-height:1.5;}
+.intro-p{font-size:14px;color:rgba(0,255,136,0.65);line-height:1.8;}
+.intro-desperto{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;color:#fff;letter-spacing:3px;margin-top:8px;}
+.intro-antidote{font-size:12px;color:rgba(0,255,136,0.45);letter-spacing:2px;margin-top:2px;}
+.intro-hint{font-size:11px;color:rgba(0,255,136,0.65);letter-spacing:1px;margin-top:20px;}
+.intro-btns{display:flex;flex-direction:column;gap:12px;margin-top:28px;}
+
+/* BTN */
+.btn{background:transparent;border:1px solid rgba(0,255,136,0.35);color:#00ff88;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;padding:16px 24px;cursor:pointer;letter-spacing:3px;transition:all 0.15s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));text-align:center;width:100%;}
+.btn:active{background:rgba(0,255,136,0.08);border-color:#00ff88;}
+.btn.secondary{border-color:rgba(0,255,136,0.65);color:rgba(0,255,136,0.5);}
+.btn.secondary:active{border-color:rgba(0,255,136,0.5);color:#00ff88;}
+
+/* CODENAME SCREEN */
+.codename-label{font-size:13px;color:rgba(0,255,136,0.5);line-height:1.8;margin-bottom:24px;}
+.codename-inp{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,255,136,0.3);outline:none;color:#00ff88;font-family:'Orbitron',sans-serif;font-weight:700;font-size:28px;padding:12px 0;letter-spacing:4px;caret-color:#00ff88;text-transform:uppercase;}
+.codename-inp::placeholder{color:rgba(0,255,136,0.65);font-size:16px;letter-spacing:2px;font-family:'Share Tech Mono',monospace;font-weight:400;}
+.codename-hint{font-size:11px;color:rgba(0,255,136,0.65);margin-top:8px;letter-spacing:1px;}
+
+/* ADAPT/EVOLVE */
+.ae-question{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;color:#fff;line-height:1.4;margin-bottom:32px;}
+.ae-cards{display:flex;flex-direction:column;gap:14px;}
+.ae-card{border:1px solid rgba(0,255,136,0.2);padding:22px 20px;cursor:pointer;transition:all 0.15s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.ae-card:active{border-color:#00ff88;background:rgba(0,255,136,0.07);}
+.ae-card-key{font-family:'Orbitron',sans-serif;font-weight:700;font-size:12px;color:#00ff88;letter-spacing:2px;margin-bottom:8px;}
+.ae-card-text{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:18px;color:#fff;line-height:1.3;}
+.ae-card-sub{font-size:12px;color:rgba(0,255,136,0.45);margin-top:6px;line-height:1.6;}
+
+/* QUIZ SCREEN */
+.quiz-hdr{border-bottom:1px solid rgba(0,255,136,0.15);padding-bottom:14px;margin-bottom:28px;flex-shrink:0;}
+.quiz-progress-bar{height:2px;background:rgba(0,255,136,0.1);margin-top:10px;position:relative;}
+.quiz-progress-fill{height:100%;background:#00ff88;transition:width 0.3s ease;}
+.quiz-progress-text{font-size:10px;color:rgba(0,255,136,0.35);letter-spacing:2px;margin-top:6px;}
+.quiz-question{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px;color:#fff;line-height:1.5;margin-bottom:28px;flex-shrink:0;}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;flex:1;}
+.quiz-opt{border:1px solid rgba(0,255,136,0.18);padding:14px 14px;cursor:pointer;transition:all 0.15s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));display:flex;align-items:flex-start;gap:12px;min-height:52px;}
+.quiz-opt:active{border-color:#00ff88;background:rgba(0,255,136,0.06);}
+.quiz-opt.selected{border-color:#00ff88;background:rgba(0,255,136,0.07);}
+.quiz-opt-key{font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;color:#00ff88;flex-shrink:0;margin-top:1px;width:18px;}
+.quiz-opt-text{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.55;}
+
+/* WEAPON SELECT */
+.weapon-opts{display:flex;flex-direction:column;gap:10px;}
+.weapon-opt{border:1px solid rgba(0,255,136,0.18);padding:16px;cursor:pointer;transition:all 0.15s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.weapon-opt:active,.weapon-opt.selected{border-color:#00ff88;background:rgba(0,255,136,0.06);}
+.weapon-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:#fff;letter-spacing:1px;}
+.weapon-type{font-size:11px;color:rgba(0,255,136,0.38);margin-top:3px;letter-spacing:1px;}
+
+/* ARCHETYPE REVEAL */
+.arc-reveal-screen{min-height:100dvh;display:flex;flex-direction:column;padding:32px 20px;background:#000;}
+@keyframes arcIn{0%{opacity:0;transform:translateY(24px) scale(0.97);}70%{opacity:1;transform:translateY(-3px) scale(1.01);}100%{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes lineIn{0%{width:0;}100%{width:100%;}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:translateY(0);}}
+.arc-scan-label{font-size:10px;color:rgba(0,255,136,0.35);letter-spacing:3px;margin-bottom:20px;animation:fadeUp 0.3s ease both;}
+.arc-big-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:44px;color:#fff;letter-spacing:6px;line-height:1;animation:arcIn 0.7s cubic-bezier(0.22,1,0.36,1) both;}
+.arc-line{height:2px;background:linear-gradient(90deg,#00ff88,transparent);animation:lineIn 0.6s ease 0.3s both;margin:16px 0;}
+.arc-attrs{display:flex;gap:10px;flex-wrap:wrap;animation:fadeUp 0.4s ease 0.55s both;}
+.arc-attr{border:1px solid rgba(0,255,136,0.25);padding:5px 12px;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
+.arc-attr b{color:#fff;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;}
+.arc-desc{font-size:14px;color:rgba(0,255,136,0.8);line-height:1.85;border-left:2px solid rgba(0,255,136,0.25);padding-left:14px;animation:fadeUp 0.4s ease 0.7s both;}
+.arc-passive-label{font-size:9px;color:rgba(0,255,136,0.3);letter-spacing:2px;animation:fadeUp 0.4s ease 0.85s both;}
+.arc-passive{font-size:13px;color:rgba(0,255,136,0.55);line-height:1.75;animation:fadeUp 0.4s ease 0.9s both;}
+.arc-cta{margin-top:auto;padding-top:28px;animation:fadeUp 0.4s ease 1.05s both;}
+.arc-cta-hint{font-size:11px;color:rgba(0,255,136,0.65);letter-spacing:1px;margin-bottom:14px;}
+
+/* CLASS LIST */
+.cls-grid{display:flex;flex-direction:column;gap:12px;}
+.cls-card{border:1px solid rgba(0,255,136,0.18);padding:18px 16px;cursor:pointer;transition:all 0.15s;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));display:flex;gap:14px;align-items:flex-start;}
+.cls-card:active{border-color:rgba(0,255,136,0.55);background:rgba(0,255,136,0.04);}
+.cls-card-info{flex:1;}
+.cls-cname{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:17px;color:#fff;letter-spacing:2px;}
+.cls-crole{font-size:11px;color:rgba(0,255,136,0.45);letter-spacing:1px;margin-top:3px;}
+.cls-csig{font-size:10px;color:rgba(0,255,136,0.65);margin-top:4px;}
+.cls-icon{width:36px;height:36px;flex-shrink:0;margin-top:2px;}
+
+/* CLASS DETAIL */
+.cls-detail-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:24px;color:#fff;letter-spacing:3px;line-height:1;margin-top:6px;}
+.cls-detail-role{font-size:10px;color:rgba(0,255,136,0.38);letter-spacing:2px;margin-top:5px;}
+.cls-stats-row{display:flex;gap:10px;margin-top:4px;}
+.cls-stat{border:1px solid rgba(0,255,136,0.22);padding:8px 14px;text-align:center;clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,0 100%);}
+.cls-stat-label{font-size:9px;color:rgba(0,255,136,0.38);letter-spacing:1px;}
+.cls-stat-val{font-size:20px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:900;}
+.cls-sig{font-size:12px;color:rgba(0,255,136,0.4);border-left:2px solid rgba(0,255,136,0.15);padding-left:10px;}
+.ab-block{border:1px solid rgba(0,255,136,0.15);margin-bottom:10px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);overflow:hidden;}
+.ab-header{padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;min-height:52px;}
+.ab-header:active{background:rgba(0,255,136,0.04);}
+.ab-name-lbl{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:1px;}
+.ab-toggle{font-size:12px;color:rgba(0,255,136,0.4);font-family:'Share Tech Mono',monospace;flex-shrink:0;margin-left:10px;}
+.ab-body{padding:10px 16px 14px;font-size:13px;color:rgba(0,255,136,0.75);line-height:1.85;border-top:1px solid rgba(0,255,136,0.1);white-space:pre-wrap;}
+.ab-body.collapsed{display:none;}
+.cls-detail-btns{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding-top:20px;}
+
+/* SHEET */
+.sheet{display:flex;flex-direction:column;min-height:100dvh;background:#000;}
+.sheet-tabs{display:flex;border-bottom:1px solid rgba(0,255,136,0.18);flex-shrink:0;overflow-x:auto;}
+.sheet-tab{font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,255,136,0.32);letter-spacing:2px;padding:14px 18px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;}
+.sheet-tab.active{color:#00ff88;border-bottom:2px solid #00ff88;}
+.sheet-page{padding:20px;display:none;flex-direction:column;gap:12px;flex:1;}
+.sheet-page.active{display:flex;}
+
+/* UNIT FILE */
+.unit-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:24px;color:#fff;letter-spacing:2px;line-height:1;}
+.unit-arc{font-size:11px;color:rgba(0,255,136,0.4);letter-spacing:1px;margin-top:4px;}
+.unit-id-block{margin-top:6px;}
+.unit-id-label{font-size:9px;color:rgba(0,255,136,0.65);letter-spacing:1px;}
+.unit-id-val{font-size:14px;color:#00ff88;letter-spacing:2px;font-family:'Orbitron',sans-serif;font-weight:700;}
+.unit-id-save{font-size:9px;color:rgba(0,255,136,0.65);}
+
+.attrs-row{display:flex;align-items:center;gap:0;background:rgba(0,255,136,0.02);border:1px solid rgba(0,255,136,0.12);padding:10px 14px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));flex-wrap:wrap;gap:8px;}
+.attr-pill{display:flex;align-items:center;gap:5px;padding-right:12px;border-right:1px solid rgba(0,255,136,0.1);}
+.attr-pill:last-of-type{border-right:none;}
+.attr-key{font-size:10px;color:rgba(0,255,136,0.38);letter-spacing:1px;}
+.attr-val{font-size:18px;color:#fff;font-family:'Orbitron',sans-serif;font-weight:900;line-height:1;}
+.signal-divider{width:1px;background:rgba(0,255,136,0.12);height:24px;margin:0 2px;}
+.signal-label-sm{font-size:9px;color:rgba(0,255,136,0.65);letter-spacing:2px;white-space:nowrap;}
+.signal-pips{display:flex;gap:4px;}
+.sig-pip{width:32px;height:32px;border:1px solid rgba(0,255,136,0.18);display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(0,255,136,0.65);cursor:pointer;font-family:'Share Tech Mono',monospace;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));}
+.sig-pip.active{background:rgba(0,255,136,0.1);border-color:#00ff88;color:#00ff88;}
+.sig-pip.danger{background:rgba(255,60,60,0.1);border-color:#ff3c3c;color:#ff3c3c;}
+.sync-badge{font-size:10px;color:#ff3c3c;letter-spacing:1px;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+.vitals-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vblock{border:1px solid rgba(0,255,136,0.18);padding:10px 12px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.vblock-label{font-size:9px;color:rgba(0,255,136,0.32);letter-spacing:2px;margin-bottom:6px;}
+.hp-row{display:flex;align-items:center;gap:10px;}
+.hp-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;color:#00ff88;transition:color 0.3s;}
+.hp-sub{font-size:9px;color:rgba(0,255,136,0.65);margin-top:2px;}
+.hp-b{width:36px;height:36px;border:1px solid rgba(0,255,136,0.22);background:transparent;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));}
+.hp-b:active{background:rgba(0,255,136,0.1);}
+.thr-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:4px;}
+.thr-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:42px;color:#fff;line-height:1;text-align:center;}
+.thr-sub{font-size:9px;color:rgba(0,255,136,0.65);margin-top:4px;text-align:center;}
+
+.passive-block{border:1px solid rgba(0,255,136,0.18);padding:10px 12px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.passive-text{font-size:12px;color:rgba(0,255,136,0.65);line-height:1.75;font-style:italic;}
+
+/* PORTRAIT */
+.portrait-block{border:1px solid rgba(0,255,136,0.18);padding:10px 12px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.portrait-slot{width:100%;height:200px;border:1px dashed rgba(0,255,136,0.18);position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));cursor:pointer;touch-action:none;}
+.portrait-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;color:rgba(0,255,136,0.65);text-align:center;line-height:1.9;pointer-events:none;}
+.portrait-slot canvas{position:absolute;top:0;left:0;width:100%;height:100%;}
+.portrait-controls{display:flex;gap:8px;margin-top:8px;}
+.portrait-btn{background:transparent;border:1px solid rgba(0,255,136,0.14);color:rgba(0,255,136,0.38);font-family:'Share Tech Mono',monospace;font-size:10px;padding:8px 12px;cursor:pointer;letter-spacing:1px;flex:1;text-align:center;}
+.portrait-btn:active{border-color:rgba(0,255,136,0.5);color:#00ff88;}
+
+/* EQUIPMENT */
+.equip-block{border:1px solid rgba(0,255,136,0.18);padding:10px 12px;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.inv-slot{border:1px solid rgba(0,255,136,0.12);padding:8px 10px;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));cursor:pointer;min-height:52px;}
+.inv-slot.equipped{border-color:rgba(0,255,136,0.35);background:rgba(0,255,136,0.03);}
+.inv-slot-label{font-size:8px;color:rgba(0,255,136,0.65);letter-spacing:2px;margin-bottom:3px;}
+.inv-slot-item{font-size:11px;color:#fff;line-height:1.3;word-break:break-word;}
+.inv-slot-item.empty{color:rgba(0,255,136,0.65);font-style:italic;font-size:10px;}
+.inv-slot-inp{width:100%;background:transparent;border:none;outline:none;color:#00ff88;font-family:'Share Tech Mono',monospace;font-size:11px;padding:0;line-height:1.3;}
+
+/* WEAPON BLOCK IN ABILITIES */
+.ab-section-label{font-size:9px;color:rgba(0,255,136,0.65);letter-spacing:3px;border-bottom:1px solid rgba(0,255,136,0.08);padding-bottom:6px;margin-bottom:8px;margin-top:14px;}
+
+/* NOTES */
+.notes-inp{width:100%;background:transparent;border:1px solid rgba(0,255,136,0.14);outline:none;color:rgba(0,255,136,0.8);font-family:'Share Tech Mono',monospace;font-size:14px;resize:none;line-height:1.85;padding:14px;min-height:320px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));}
+.notes-inp::placeholder{color:rgba(0,255,136,0.65);}
+
+/* RETRIEVE */
+.ret-inp{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(0,255,136,0.3);outline:none;color:#00ff88;font-family:'Orbitron',sans-serif;font-weight:700;font-size:18px;padding:12px 0;letter-spacing:3px;caret-color:#00ff88;text-transform:uppercase;}
+.ret-inp::placeholder{color:rgba(0,255,136,0.65);font-size:12px;letter-spacing:1px;font-family:'Share Tech Mono',monospace;font-weight:400;}
+
+.block-label{font-size:9px;color:rgba(0,255,136,0.32);letter-spacing:2px;margin-bottom:8px;}
+.divider{border:none;border-top:1px solid rgba(0,255,136,0.1);margin:4px 0;}
+.page-hdr{border-bottom:1px solid rgba(0,255,136,0.15);padding-bottom:14px;margin-bottom:20px;}
+.page-hdr-sub{font-size:10px;color:rgba(0,255,136,0.38);letter-spacing:2px;margin-top:6px;}
+.footer-brand{font-size:9px;color:rgba(0,255,136,0.65);letter-spacing:1px;text-align:center;padding:20px 0 8px;}
+
+@media (min-width:760px){
+html,body{display:flex;justify-content:center;align-items:flex-start;}
+body{padding:0 20px;min-height:100vh;overflow:hidden;}
+.screen,.arc-reveal-screen,.sheet{width:min(100%,820px);margin:0 auto;border-left:1px solid rgba(0,255,136,0.08);border-right:1px solid rgba(0,255,136,0.08);box-shadow:0 0 80px rgba(0,255,136,0.035);}
+.screen{height:auto;min-height:calc(100dvh - 84px);max-height:none;padding:34px 38px;}
+.boot-log{overflow:auto;}
+.boot-inp-row{margin-top:auto;}
+.glitch{letter-spacing:6px;}
+.intro-transmission{max-width:720px;}
+.intro-btns{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.btn:hover,.boot-btn:hover,.portrait-btn:hover{border-color:#00ff88;color:#00ff88;background:rgba(0,255,136,0.06);}
+.ae-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.quiz-question{font-size:24px;max-width:760px;}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:14px;}
+.weapon-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.arc-reveal-screen{min-height:calc(100dvh - 84px);padding:44px 46px;}
+.arc-big-name{font-size:58px;}
+.arc-desc,.arc-passive{max-width:720px;}
+.cls-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;overflow:visible!important;}
+.cls-card:hover,.weapon-opt:hover,.quiz-opt:hover,.ae-card:hover,.implant-card:hover{border-color:rgba(0,255,136,0.55);background:rgba(0,255,136,0.045);}
+.cls-detail-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sheet{height:100vh;max-height:100vh;min-height:0;overflow:hidden;}
+.sheet-tabs{height:40px;justify-content:center;overflow:visible;}
+.sheet-tab{padding:13px 22px;}
+.sheet-page{padding:22px 28px;overflow-y:auto;}
+.unit-name{font-size:32px;}
+.attrs-row{gap:10px;}
+#tab-main.active{display:grid!important;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto 1fr auto;gap:10px 12px;height:calc(100vh - 40px);overflow:hidden;padding:20px 22px 12px;position:relative;}
+#tab-main>div:first-child{grid-column:1 / 2;grid-row:1;display:block!important;}
+#sh-cls-icon{position:absolute;top:34px;right:210px;}
+#tab-main>#sh-id{grid-column:2 / 3;grid-row:1;align-self:center;justify-self:end;text-align:right;margin-top:0;}
+#tab-main>.attrs-row{grid-column:1 / -1;grid-row:2;}
+#tab-main>.vitals-row{grid-column:1 / 2;grid-row:3;grid-template-columns:1fr 1fr;min-height:96px;}
+#tab-main>.passive-block{grid-column:2 / 3;grid-row:3;min-height:96px;}
+#tab-main>.portrait-block{grid-column:1 / 2;grid-row:4;min-height:0;display:flex;flex-direction:column;}
+#tab-main>.equip-block{grid-column:2 / 3;grid-row:4;min-height:0;display:flex;flex-direction:column;}
+#tab-main>div[style*="display:flex;flex-direction:column"]{grid-column:2 / 3;grid-row:5;flex-direction:row!important;justify-content:flex-end;gap:10px!important;margin-top:0!important;}
+#tab-main>.footer-brand{grid-column:1 / 2;grid-row:5;align-self:center;text-align:left;padding:0;}
+#tab-main .btn{min-width:128px;padding:10px 18px;font-size:12px;}
+.portrait-slot{height:auto;flex:1;min-height:0;}
+.inv-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);flex:1;}
+.inv-slot{min-height:0;}
+#tab-abilities{max-width:900px;margin:0 auto;width:100%;}
+#tab-notes{min-height:calc(100dvh - 160px);}
+.notes-inp{min-height:560px;font-size:15px;}
+#tab-ref{max-width:860px;margin:0 auto;width:100%;}
+.ret-inp,.codename-inp{max-width:620px;}
+}
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<!-- BOOT -->
+<div id="s-boot" class="screen" style="justify-content:space-between;">
+  <div style="flex:1;overflow:hidden;min-height:0;">
+    <div class="glitch" data-text="BIOCODED" style="font-size:32px;margin-bottom:16px;display:block;">BIOCODED</div>
+    <div class="boot-log" id="boot-log" style="overflow:hidden;"></div>
+  </div>
+  <button type="button" id="boot-run-btn" class="btn" onclick="return __biocodedRun(event)" ontouchstart="return __biocodedRun(event)" style="width:100%;flex-shrink:0;margin-top:20px;">[ RUN ]</button>
+</div>
+
+<!-- INTRO -->
+<div id="s-intro" class="screen hidden" style="justify-content:space-between;">
+  <div>
+    <div class="glitch" data-text="BIOCODED" style="font-size:30px;display:block;">BIOCODED</div>
+    <div class="page-hdr-sub" style="margin-top:6px;margin-bottom:16px;">DESPERTO CLASSIFICATION PROTOCOL v0.1</div>
+    <div class="intro-status" style="font-size:12px;margin-bottom:14px;">
+      <div>CORTEX-NET SIGNAL: ANOMALY DETECTED</div>
+      <div>WIREBRAIN REWRITE: FAILED</div>
+      <div>DESPERTO STATUS: CONFIRMED</div>
+    </div>
+    <div class="intro-transmission">
+      <div class="intro-h" style="font-size:15px;">T-Corp controls your perceptions, weaving your reality.</div>
+      <div class="intro-h" style="font-size:15px;">But you, somehow, broke the Protocol.</div>
+      <div class="intro-p" style="font-size:13px;">They tried to rewrite you. It couldn't. And what you became instead is what this terminal is here to find out.</div>
+      <div class="intro-desperto" style="font-size:18px;margin-top:10px;">You're now Desperto.</div>
+      <div class="intro-antidote" style="font-size:11px;">Prepare to insert the Antidote.</div>
+    </div>
+    <div class="intro-hint" style="margin-top:12px;">// 8 QUESTIONS // ARCHETYPE // CLASS // UNIT ID</div>
+  </div>
+  <div class="intro-btns" style="gap:10px;">
+    <button class="btn" onclick="showCodename()">INITIATE SCAN</button>
+    <button class="btn secondary" onclick="show('s-retrieve')">LOAD UNIT ID</button>
+  </div>
+</div>
+
+<!-- CODENAME -->
+<div id="s-codename" class="screen hidden" style="justify-content:space-between;">
+  <div>
+    <div class="glitch" data-text="BIOCODED" style="font-size:30px;display:block;">BIOCODED</div>
+    <div class="page-hdr-sub" style="margin-top:6px;margin-bottom:24px;">IDENTIFICATION REQUIRED</div>
+    <div class="codename-label" style="margin-bottom:20px;">Before the scan begins, the system needs to identify you.</div>
+    <input class="codename-inp" id="codename-inp" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="your codename" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmCodename();}"/>
+    <div class="codename-hint" style="margin-top:8px;">// TYPE AND PRESS CONFIRM</div>
+  </div>
+  <button class="btn" onclick="confirmCodename()">CONFIRM</button>
+</div>
+
+<!-- ADAPT/EVOLVE -->
+<div id="s-adapt" class="screen hidden" style="justify-content:space-between;">
+  <div>
+    <div class="glitch" data-text="BIOCODED" style="font-size:30px;display:block;">BIOCODED</div>
+    <div class="page-hdr-sub" style="margin-top:6px;margin-bottom:20px;">PRE-SCAN CALIBRATION</div>
+    <div class="ae-question" style="font-size:18px;margin-bottom:24px;">One question before the scan begins.</div>
+  </div>
+  <div class="ae-cards" style="flex:1;justify-content:center;display:flex;flex-direction:column;gap:14px;">
+    <div class="ae-card" onclick="startQuiz()">
+      <div class="ae-card-key">A</div>
+      <div class="ae-card-text">Adapt.</div>
+      <div class="ae-card-sub">The organism that bends survives.</div>
+    </div>
+    <div class="ae-card" onclick="startQuiz()">
+      <div class="ae-card-key">B</div>
+      <div class="ae-card-text">Evolve.</div>
+      <div class="ae-card-sub">The signal that mutates cannot be contained.</div>
+    </div>
+  </div>
+  <div style="height:20px;flex-shrink:0;"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="s-quiz" class="screen hidden" style="justify-content:space-between;padding-bottom:24px;">
+  <div class="quiz-hdr" style="flex-shrink:0;">
+    <div class="glitch" data-text="BIOCODED" style="font-size:26px;">BIOCODED</div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-bar" style="width:0%"></div></div>
+    <div class="quiz-progress-text" id="quiz-prog">QUESTION 1 OF 8</div>
+  </div>
+  <div class="quiz-question" id="quiz-q" style="font-size:16px;line-height:1.45;flex-shrink:0;margin-bottom:0;">--</div>
+  <div class="quiz-opts" id="quiz-opts" style="flex:1;justify-content:center;display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+
+<!-- WEAPON -->
+<div id="s-weapon" class="screen hidden" style="justify-content:space-between;">
+  <div style="flex-shrink:0;">
+    <div class="glitch" data-text="BIOCODED" style="font-size:26px;display:block;">BIOCODED</div>
+    <div style="font-size:10px;color:rgba(0,255,136,0.32);letter-spacing:3px;margin-top:6px;margin-bottom:4px;">// WEAPON SELECTION</div>
+    <div style="font-size:12px;color:rgba(0,255,136,0.42);margin-bottom:16px;">Choose your signature weapon.</div>
+  </div>
+  <div class="weapon-opts" id="weapon-opts" style="flex:1;overflow-y:auto;"></div>
+  <div style="padding-top:14px;flex-shrink:0;">
+    <button class="btn" id="weapon-confirm" style="opacity:0.3;width:100%;" onclick="confirmWeapon()">CONFIRM WEAPON</button>
+  </div>
+</div>
+
+<!-- ARCHETYPE REVEAL -->
+<div id="s-archetype" class="arc-reveal-screen hidden" style="height:100dvh;max-height:100dvh;overflow:hidden;justify-content:space-between;padding:28px 20px 24px;">
+  <div>
+    <div class="arc-scan-label">// SCAN COMPLETE — NEURAL PATTERN IDENTIFIED</div>
+    <div class="arc-big-name" id="a-name" style="font-size:38px;">--</div>
+    <div class="arc-line"></div>
+    <div class="arc-attrs" id="a-attrs" style="margin-bottom:14px;"></div>
+    <div class="arc-desc" id="a-desc" style="font-size:13px;line-height:1.75;"></div>
+    <div style="height:10px;"></div>
+    <div class="arc-passive-label">// PASSIVE ABILITY</div>
+    <div style="height:4px;"></div>
+    <div class="arc-passive" id="a-passive" style="font-size:12px;"></div>
+  </div>
+  <div class="arc-cta" style="margin-top:0;padding-top:0;animation:fadeUp 0.4s ease 1.05s both;">
+    <div class="arc-cta-hint" style="margin-bottom:12px;">This is what the system found in you. Now choose how you operate.</div>
+    <button class="btn" onclick="show('s-classlist')">CHOOSE YOUR CLASS</button>
+  </div>
+</div>
+
+<!-- CLASS LIST -->
+<div id="s-classlist" class="screen hidden" style="justify-content:flex-start;">
+  <div style="flex-shrink:0;margin-bottom:14px;">
+    <div class="glitch" data-text="BIOCODED" style="font-size:26px;display:block;">BIOCODED</div>
+    <div style="font-size:10px;color:rgba(0,255,136,0.32);letter-spacing:3px;margin-top:6px;margin-bottom:4px;">// CLASS SELECTION</div>
+    <div style="font-size:12px;color:rgba(0,255,136,0.42);">Archetype is what the system reads. Class is how you operate.</div>
+  </div>
+  <div class="cls-grid" id="cls-grid" style="overflow-y:auto;flex:1;"></div>
+</div>
+
+<!-- CLASS DETAIL -->
+<div id="s-cls-detail" class="screen hidden">
+  <div class="page-hdr">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div id="cd-icon"></div>
+      <div>
+        <div class="cls-detail-name" id="cd-name">--</div>
+        <div class="cls-detail-role" id="cd-role">--</div>
+      </div>
+    </div>
+  </div>
+  <div class="cls-stats-row" id="cd-stats"></div>
+  <div class="cls-sig" id="cd-sig">--</div>
+  <hr class="divider" style="margin:12px 0;">
+  <div style="font-size:9px;color:rgba(0,255,136,0.3);letter-spacing:2px;margin-bottom:10px;">// ABILITIES — TAP TO EXPAND</div>
+  <div id="cd-abilities"></div>
+  <div class="cls-detail-btns">
+    <button class="btn" onclick="confirmClass()">CONFIRM CLASS</button>
+    <button class="btn secondary" onclick="show('s-classlist')">BACK</button>
+  </div>
+</div>
+
+<!-- SHEET -->
+<div id="s-sheet" class="sheet hidden">
+  <div class="sheet-tabs">
+    <div class="sheet-tab active" onclick="switchTab('main')">UNIT FILE</div>
+    <div class="sheet-tab" onclick="switchTab('abilities')">ABILITIES</div>
+    <div class="sheet-tab" onclick="switchTab('notes')">NOTES</div>
+    <div class="sheet-tab" onclick="switchTab('ref')">REF</div>
+  </div>
+
+  <!-- UNIT FILE -->
+  <div id="tab-main" class="sheet-page active">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+      <div>
+        <div class="unit-name" id="sh-name">--</div>
+        <div class="unit-arc" id="sh-arc">--</div>
+      </div>
+      <div id="sh-cls-icon"></div>
+    </div>
+    <div class="unit-id-block" id="sh-id">--</div>
+    <div class="attrs-row" id="sh-attrs-row"></div>
+    <div class="vitals-row">
+      <div class="vblock" style="flex:1.4;">
+        <div class="vblock-label">// DAMAGE CLOCK</div>
+        <div id="sh-clock" style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px;"></div>
+        <div style="font-size:10px;color:rgba(0,255,136,0.35);margin-top:6px;font-family:'Share Tech Mono',monospace;letter-spacing:1px;">TAP TO MARK · 12 SEGMENTS</div>
+        <div id="sh-implant-row" style="margin-top:10px;display:none;flex-direction:column;gap:6px;">
+          <div class="vblock-label">// IMPLANT SLOTS</div>
+          <div id="sh-implant-slots" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;"></div>
+        </div>
+      </div>
+      <div class="vblock" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="vblock-label" style="text-align:center;">// THRESHOLD</div>
+        <div class="thr-center">
+          <div class="thr-num" id="sh-threshold">--</div>
+          <div class="thr-sub" id="sh-threshold-sub">--</div>
+        </div>
+      </div>
+    </div>
+    <div class="passive-block">
+      <div class="block-label">// PASSIVE ABILITY</div>
+      <div class="passive-text" id="sh-passive">--</div>
+    </div>
+    <div class="portrait-block">
+      <div class="block-label">// PORTRAIT</div>
+      <div class="portrait-slot" id="portrait-slot" onclick="if(!imgState.img)triggerPortrait()">
+        <div class="portrait-placeholder" id="portrait-placeholder">TAP TO ADD PHOTO<br><span style="font-size:9px;opacity:0.7;">select from gallery</span></div>
+        <canvas id="portrait-canvas" style="display:none;"></canvas>
+      </div>
+      <div class="portrait-controls" id="portrait-controls" style="display:none;">
+        <button class="portrait-btn" onclick="triggerPortrait()">[ CHANGE ]</button>
+        <button class="portrait-btn" onclick="resetPortrait()">[ RESET ]</button>
+      </div>
+      <input type="file" accept="image/*" id="portrait-file" style="display:none;" onchange="handlePortrait(event)"/>
+    </div>
+    <div class="equip-block">
+      <div class="block-label">// EQUIPMENT — TAP TO EDIT</div>
+      <div class="inv-grid" id="sh-inventory"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+      <button class="btn secondary" onclick="restart()">NEW SCAN</button>
+      <button class="btn secondary" onclick="show('s-retrieve')">LOAD UNIT ID</button>
+    </div>
+    <div class="footer-brand">BIOCODED // PAMYEL // anti.</div>
+  </div>
+
+  <!-- ABILITIES -->
+  <div id="tab-abilities" class="sheet-page" style="display:none;">
+    <div style="font-size:11px;color:rgba(0,255,136,0.28);letter-spacing:1px;margin-bottom:4px;">TAP ANY ENTRY TO EXPAND.</div>
+    <div class="ab-section-label">// SIGNATURE WEAPON</div>
+    <div id="sh-weapon-block"></div>
+    <div class="ab-section-label">// CLASS ABILITIES</div>
+    <div id="sh-abilities"></div>
+  </div>
+
+  <!-- NOTES -->
+  <div id="tab-notes" class="sheet-page" style="display:none;">
+    <textarea class="notes-inp" id="sh-notes" placeholder="Observations, connections, objectives, debts, allies, enemies, fragments..." oninput="persistSheet()"></textarea>
+  </div>
+
+  <div id="tab-ref" class="sheet-page" style="display:none;overflow-y:auto;font-size:12px;line-height:1.85;color:rgba(0,255,136,0.85);gap:0;">
+    <div style="font-size:10px;color:rgba(0,255,136,0.65);letter-spacing:2px;margin-bottom:16px;">// QUICK REFERENCE</div>
+
+    <div style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">INITIATIVE</div>
+    <div style="margin-bottom:14px;">Determined by <b style="color:#fff;">METHOD</b> (highest goes first). Ties broken by <b style="color:#fff;">VEIL</b>. GM decides if still tied. Order holds for the entire Scene.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">RESOLUTION</div>
+    <div style="margin-bottom:16px;font-size:13px;">All tests: <b style="color:#fff;">2d6 + attribute ≥ THR</b> to succeed. Fail = +1 Signal. <b style="color:#fff;">Critical = natural 12</b> (before adding attribute) → +1 Overdrive for the group.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">INITIATIVE</div>
+    <div style="margin-bottom:14px;font-size:13px;">Determined by <b style="color:#fff;">METHOD</b> (highest goes first). Ties broken by <b style="color:#fff;">VEIL</b>. GM decides if still tied. Order holds for the entire Scene.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">THRESHOLD (THR)</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Character THR</b> = Memento base + highest attribute</div>
+    <div style="margin-bottom:4px;font-size:12px;color:rgba(0,255,136,0.6);">Glitch Angel 6 · Void Diver 7 · Gloom Reaper 7 · Soul Alchemist 6 · Flesh Oracle 10</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Enemy THR</b> — Common 8 · Elite 10 · Boss 13</div>
+    <div style="margin-bottom:16px;font-size:12px;color:rgba(0,255,136,0.6);">Enemy DMG — Common d4 · Elite d6 · Boss d8+effect</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">SIGNAL</div>
+    <div style="margin-bottom:16px;font-size:13px;">Tracks Cortex-Net pressure. Each failed test adds <b style="color:#fff;">+1 Signal</b>. At Signal 5: <b style="color:#ff3c3c;">SYNC EVENT</b> — T-Corp controls the character for one Shot. Signal resets to 0.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">OVERDRIVE</div>
+    <div style="margin-bottom:6px;font-size:13px;">Group pool 0–5. Generated by critical (nat 12). Resets at end of session.</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">1 OD</b> — Reroll any die</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">2 OD</b> — Fixed max damage on next attack or offensive ability</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">3 OD</b> — Automatic success without rolling, once per Scene</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">DAMAGE CLOCK</div>
+    <div style="margin-bottom:6px;font-size:13px;">Each character has <b style="color:#fff;">12 segments</b>. Mark segments equal to die result. Full clock = out of combat.</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Nanobots / Recode Heal</b> — die result in segments</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Stim (item)</b> — 4 segments</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Rest between scenes</b> — 3 segments</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">Rest between sessions</b> — full reset</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">BEATS (2 per Shot/Turn)</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">Movement</b> — move or reposition<br><b style="color:#fff;">Attack</b> — 2d6 + attribute vs THR · DMG 1d6<br><b style="color:#fff;">Technical</b> — use an ability<br><b style="color:#fff;">Interaction</b> — use or interact with an item<br><b style="color:#fff;">Help</b> — spend your Technical Beat so an ally rolls using your attribute instead of their own.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">COUNTERSHOT (Reaction)</div>
+    <div style="margin-bottom:16px;font-size:13px;">Used outside your Shot. Costs <b style="color:#fff;">1 Beat on your next Shot</b>. Countershot abilities: Intercept, Redirect, Protect.</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">IMPLANTS</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Weave</b> — 1 slot, absorbs 2 segments</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Brace</b> — 2 slots, absorbs 3 segments</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">Shell</b> — 3 slots, absorbs 4 segments · -1 METHOD</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">ARCHETYPES</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">Naive</b> FLESH+1 VEIL+2 · <b style="color:#fff;">Orphan</b> FLESH+1 VEIL+1 METHOD+1 · <b style="color:#fff;">Breaker</b> FLESH+2 METHOD+1<br><b style="color:#fff;">Hollow</b> VEIL+2 METHOD+1 · <b style="color:#fff;">Sage</b> VEIL+1 METHOD+2 · <b style="color:#fff;">Oracle</b> VEIL+3</div>
+
+    <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:2px;margin-bottom:6px;">MEMENTOS (BASE THR)</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Glitch Angel</b> THR 6 · support and disruption</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Void Diver</b> THR 7 · infiltration and traversal</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Flesh Oracle</b> THR 10 · resilience and body horror</div>
+    <div style="margin-bottom:4px;font-size:13px;"><b style="color:#fff;">Gloom Reaper</b> THR 7 · damage and severance</div>
+    <div style="margin-bottom:16px;font-size:13px;"><b style="color:#fff;">Soul Alchemist</b> THR 6 · utility and biological burst</div>
+
+    <div style="font-size:9px;color:rgba(0,255,136,0.65);letter-spacing:1px;margin-top:8px;">BIOCODED // PAMYEL // anti.</div>
+  </div>
+</div>
+
+<!-- IMPLANT SELECT -->
+<div id="s-implant" class="screen hidden">
+  <div class="screen-header">
+    <div class="screen-title">IMPLANT</div>
+    <div class="screen-sub">STEP 5 OF 5 · CHOOSE YOUR PROTECTION</div>
+  </div>
+  <div style="font-size:12px;color:rgba(0,255,136,0.4);margin-bottom:16px;padding:0 4px;font-family:'Share Tech Mono',monospace;line-height:1.7;">Implant slots absorb damage segments before your Damage Clock is marked. Slots recover between sessions.</div>
+  <div id="implant-cards" style="display:flex;flex-direction:column;gap:10px;"></div>
+</div>
+
+<!-- RETRIEVE -->
+<div id="s-retrieve" class="screen hidden" style="justify-content:space-between;">
+  <div>
+    <div class="glitch" data-text="UNIT RECALL" style="font-size:28px;display:block;">UNIT RECALL</div>
+    <div class="page-hdr-sub" style="margin-top:6px;margin-bottom:20px;">ENTER YOUR UNIT ID TO LOAD YOUR FILE</div>
+    <div style="font-size:13px;color:rgba(0,255,136,0.42);line-height:1.8;margin-bottom:24px;">Your Unit ID looks like:<br>NAI-RGDZ-1A2B</div>
+    <input class="ret-inp" id="ret-inp" placeholder="enter unit id..." maxlength="14" autocomplete="off" spellcheck="false" autocapitalize="characters"/>
+    <div style="font-size:13px;color:#ff9900;margin-top:14px;" class="hidden" id="ret-err">// UNIT ID NOT FOUND IN SYSTEM.</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <button class="btn" onclick="loadUnit()">LOAD FILE</button>
+    <button class="btn secondary" onclick="show('s-intro')">BACK</button>
+  </div>
+</div>
+
+<script>
+const ARCHETYPES={Naive:{name:"NAIVE",attrs:{FLESH:1,VEIL:2,METHOD:0},desc:"You still believe change is possible — not from ignorance, but from a deliberate refusal to give up. The signal tried to overwrite you. You chose to feel it instead.",passive:"First Sync Event per Sequence: roll 2d6. On 9+, signal fails to fully rewrite you. Signal returns to 3 instead of resetting to 0."},Orphan:{name:"ORPHAN",attrs:{FLESH:1,VEIL:1,METHOD:1},desc:"You've lost enough to know how to survive loss. Belonging isn't given — you build it from whatever's left. Adaptable to the point of invisibility.",passive:"When an ally suffers a Sync Event, you may voluntarily absorb 1 Signal from them."},Breaker:{name:"BREAKER",attrs:{FLESH:2,VEIL:0,METHOD:1},desc:"You don't destroy things because you're angry. You destroy them because you've calculated that nothing inside that structure can grow. Precision, not impulse.",passive:"When you fail a roll and gain Signal, you may immediately retry the same action at -2."},Hollow:{name:"HOLLOW",attrs:{FLESH:0,VEIL:2,METHOD:1},desc:"Something was taken from you long before the Cortex-Net tried. What remained learned to move through absence. You survive from what was injured, not despite it.",passive:"Start each Sequence at Signal 2. Immune to first Sync Event per Sequence. The signal finds nothing to hold onto."},Sage:{name:"SAGE",attrs:{FLESH:0,VEIL:1,METHOD:2},desc:"You read the room before anyone else has finished walking in. Knowledge is the only infrastructure that doesn't rust. You trust what you understand.",passive:"Once per Scene, ask the GM one yes/no question about the environment or an enemy before acting."},Oracle:{name:"ORACLE",attrs:{FLESH:0,VEIL:3,METHOD:0},desc:"You receive signals other people don't. Not visions — data bleeding through the wrong frequency. The Cortex-Net's failure in you opened something the T-Corp didn't account for.",passive:"When an ally suffers a Sync Event, you see what the T-Corp is doing through them. GM describes the action before executing — group gets one Countershot (Reaction)."}};
+
+const CLASS_ICONS={"Glitch Angel":`<svg class="cls-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#00ff88" stroke-width="1" opacity="0.3"/><line x1="20" y1="4" x2="20" y2="36" stroke="#00ff88" stroke-width="1.5"/><line x1="4" y1="20" x2="36" y2="20" stroke="#00ff88" stroke-width="1.5"/><circle cx="20" cy="20" r="5" fill="none" stroke="#fff" stroke-width="1.5"/><circle cx="20" cy="20" r="2" fill="#fff"/></svg>`,"Void Diver":`<svg class="cls-icon" viewBox="0 0 40 40" fill="none"><polygon points="20,3 37,20 20,37 3,20" stroke="#00ff88" stroke-width="1" fill="none" opacity="0.3"/><polygon points="20,10 30,20 20,30 10,20" stroke="#00ff88" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="2.5" fill="#fff" opacity="0.6"/></svg>`,"Flesh Oracle":`<svg class="cls-icon" viewBox="0 0 40 40" fill="none"><rect x="4" y="4" width="32" height="32" stroke="#00ff88" stroke-width="1" opacity="0.2"/><rect x="10" y="10" width="20" height="20" stroke="#00ff88" stroke-width="1.5" fill="none"/><line x1="4" y1="4" x2="10" y2="10" stroke="#00ff88" stroke-width="1"/><line x1="36" y1="4" x2="30" y2="10" stroke="#00ff88" stroke-width="1"/><line x1="4" y1="36" x2="10" y2="30" stroke="#00ff88" stroke-width="1"/><line x1="36" y1="36" x2="30" y2="30" stroke="#00ff88" stroke-width="1"/><rect x="16" y="16" width="8" height="8" fill="#fff" opacity="0.4"/></svg>`,"Gloom Reaper":`<svg class="cls-icon" viewBox="0 0 40 40" fill="none"><path d="M20 38 Q20 32 18 28 Q16 24 14 20" stroke="#00ff88" stroke-width="1.4" stroke-linecap="round"/><path d="M18 28 Q22 26 24 23" stroke="#00ff88" stroke-width="1" stroke-linecap="round" opacity="0.6"/><path d="M16 24 Q12 23 11 20" stroke="#00ff88" stroke-width="1" stroke-linecap="round" opacity="0.6"/><circle cx="11" cy="19.5" r="1" fill="#00ff88" opacity="0.4"/><circle cx="24.5" cy="22.5" r="1" fill="#00ff88" opacity="0.4"/><path d="M14 20 Q12 16 14 12 Q16 9 18 10 Q17 14 16 17 Q15 19 14 20Z" stroke="#fff" stroke-width="1" fill="rgba(255,255,255,0.08)"/><path d="M14 20 Q16 15 19 12 Q21 10 22 11 Q20 15 18 18 Q16 20 14 20Z" stroke="#fff" stroke-width="1" fill="rgba(255,255,255,0.06)"/><path d="M14 20 Q17 16 20 14 Q22 13 23 14 Q21 17 19 19 Q17 21 14 20Z" stroke="#fff" stroke-width="1" fill="rgba(255,255,255,0.05)"/><circle cx="28" cy="14" r="0.7" fill="#fff" opacity="0.3"/><circle cx="9" cy="28" r="0.6" fill="#fff" opacity="0.25"/></svg>`,"Soul Alchemist":`<svg class="cls-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="#00ff88" stroke-width="1" opacity="0.2"/><path d="M20 6 L22 15 L31 13 L25 20 L31 27 L22 25 L20 34 L18 25 L9 27 L15 20 L9 13 L18 15 Z" stroke="#fff" stroke-width="1.2" fill="none" opacity="0.7"/><circle cx="20" cy="20" r="3.5" fill="none" stroke="#00ff88" stroke-width="1.5"/></svg>`};
+
+const CLASSES={"Glitch Angel":{role:"SUPPORT AND DISRUPTION",sig:"Respirator mask + nanobots",thresholdBase:6,abilities:[{name:"Nanobots",desc:"Remotely controlled microrobots that the Glitch Angel directs in real time, programmable to destroy enemy tissue or repair damage to an ally depending on the configuration applied at the moment of use.\n\nBeat type: Technical.\nDeals 1d6 damage to an enemy or restores 1d6 segments on the Damage Clock of an ally."},{name:"Purge Signal",desc:"An emergency intervention on an ally's nervous system on the verge of losing control. The Glitch Angel interferes in the frequency overloading the system, relieving pressure before collapse becomes inevitable.\n\nBeat type: Technical.\nReduces any ally's Signal by 1d6. Once per Scene."},{name:"Feedback",desc:"Injects raw noise directly into an enemy's processing capacity, temporarily overloading their senses and coordination. The target doesn't fall, but becomes momentarily unable to act.\n\nBeat type: Technical.\nTarget tests FLESH vs THR 8. On fail: loses 1 Beat on their next Shot."}]},"Void Diver":{role:"INFILTRATION AND TRAVERSAL",sig:"Cybernetic implants along arms and spine",thresholdBase:7,abilities:[{name:"Concealment",desc:"The Void Diver activates implants that scatter their signal signature, making them harder to detect. While in Concealment, the Void Diver deals +1d4 bonus damage on all attacks. Concealment applies only to the Void Diver, not to the Ghost Signal clone.\n\nBeat type: Technical.\nBase THR to detect the Void Diver: 8. Concealment raises detection THR to 10."},{name:"Redirect",desc:"Upon receiving a hit, the Void Diver calculates the impact trajectory and attempts to redistribute it back to the attacker.\n\nBeat type: Countershot (Reaction). Costs 1 Beat on the Void Diver's next Shot.\nTests METHOD vs THR 8. Success: full damage redirected to attacker. Fail: takes half, returns half."},{name:"Ghost Signal",desc:"Projects a visual illusion of the Void Diver at any point within line of sight. The clone can perform movement, attack, and technical actions, and benefits from the +1d4 Concealment bonus if the Void Diver is currently in Concealment. The clone cannot use Concealment itself.\n\nBeat type: Technical.\nIf an enemy detects the clone (2d6 + VEIL vs THR 8), the illusion is destroyed and the Void Diver loses 1 Beat on their next Shot. After detection or destruction, the Void Diver must choose: reposition, reactivate Ghost Signal, or enter Concealment."}]},"Flesh Oracle":{role:"RESILIENCE AND BODY HORROR",sig:"Coded tattoos that burn when activated",thresholdBase:10,abilities:[{name:"Intercept",desc:"The Flesh Oracle interposes their own body to absorb an attack aimed at an ally.\n\nBeat type: Countershot (Reaction). Costs 1 Beat on the Flesh Oracle's next Shot.\nNo roll required. Absorbs full damage from one attack targeting an ally."},{name:"Calcify",desc:"Hardens subcutaneous muscle and skin layers on demand, increasing resistance to impacts for a period.\n\nBeat type: Technical.\nRaises character THR by +2 for one Scene."},{name:"Rewrite",desc:"Alters its own anatomy in real time. 3 uses per Sequence, each use consumes one form.\n\nBeat type: Technical.\nImmobilize: pins target, disabling 2 of their Beats on their next Shot.\nElongate: extends a limb to strike at range for 1d6 damage.\nRegenerate: restores 1d6 segments on the Damage Clock."}]},"Gloom Reaper":{role:"DAMAGE AND SEVERANCE",sig:"Bone mask, spined mantle, eyes that emerge in combat",thresholdBase:7,abilities:[{name:"Severance",desc:"A fixed gaze that disrupts the target's coordination and perception for the rest of the scene. The target doesn't know exactly what changed, only that every action costs more than it should.\n\nBeat type: Technical.\nTarget tests VEIL vs THR 8. On fail: suffers -1 on all rolls until end of Scene."},{name:"Corrupt",desc:"Marks a target so that each damage received progressively destabilizes its nervous system. When the target falls, the curse can be immediately transferred to another.\n\nBeat type: Technical.\nWhile active: target marks +1d4 extra segments on each hit and gains 1 Signal per proc. If the target reaches Signal 5 and is not a Desperto, it Awakens."},{name:"Bloodstate",desc:"An altered state where the limits of reaction and perception dissolve. Once per Scene, you choose when to activate.\n\nBeat type: Technical.\nWhile active: both 2 and 12 on 2d6 count as criticals. Any failure during Bloodstate adds 2 Signal instead of 1."}]},"Soul Alchemist":{role:"UTILITY AND BIOLOGICAL BURST",sig:"Holographic grimoire with chemical and alchemical formulas",thresholdBase:6,abilities:[{name:"Recode",desc:"Reorganizes the molecular structure of materials present in the scene. Free, once per option per Scene.\n\nProtect: Countershot (Reaction) — hardens a surface to absorb the next hit taken by an adjacent ally. Costs 1 Beat on the Soul Alchemist's next Shot.\nHeal: Technical — restores 1d6 segments on an ally's Damage Clock.\nAcid: Beat (Attack) — deals 1d6 damage to a target in contact.\nConduct: Technical — disables 1 Beat of an enemy on their next Shot; target tests METHOD vs THR 8 to resist."},{name:"Reshape",desc:"In passive mode, maintains continuous control over the state of surrounding matter, converting environmental elements or overloading circuits.\n\nBeat type: Technical.\n2d6 + METHOD vs THR: 8 for simple, 10 for medium, 13 for complex."},{name:"Overclocked",desc:"Applies a compound that amplifies the next Beat of an ally. On a critical result (nat 12), the effect automatically spreads to a second nearby ally.\n\nBeat type: Technical.\nThe ally's next roll gains +2. On critical (nat 12): spreads to a second ally."},{name:"Rupture",desc:"Projects at range a chemical reaction that acts progressively on the target's biological tissue, dealing damage each turn until the target stabilizes.\n\nBeat type: Technical.\nTarget marks 1d6 segments at the start of each of their turns. Tests VEIL vs THR 8 to stabilize."}]}};
+
+const WEAPONS=[{name:"Bone Blade",type:"Melee / Blade",damage:"1d6",desc:"Made from Titan bone, the blade hides an ignition mechanism in the handle that, when triggered, superheats the internal marrow until it ionizes. The result is a plasma thread that forms along the cut edge, with a color that varies according to the biochemistry of the Titan it came from."},{name:"Titanium Claws",type:"Melee / Unarmed",damage:"1d6",desc:"Titanium alloy claws fixed directly to the hand by surgical grafting, with no electronics and no activation mechanism. The bearer's own strength is the only engine, and the material is dense enough to tear through reinforced bone armor."},{name:"Titanknuck",type:"Melee / Unarmed",damage:"1d6",desc:"A titanium plate molded over the knuckles that precisely distributes impact force, concentrating enough pressure to fracture light armor without any additional mechanism."},{name:"Conduit",type:"Melee / Electric Baton",damage:"1d6",desc:"A combat baton with a high-voltage cell embedded in the handle that releases an electric discharge on contact. Designed to incapacitate, though the line between incapacitating and killing depends on how long the target remains exposed."},{name:"Hollowpoint",type:"Ranged / Heavy Pistol",damage:"1d6",desc:"A heavy-caliber pistol whose shot is deliberate, audible, and detectable by sensors. Not the weapon of someone who needs to go unnoticed, and usually chosen by those who have already given up on that possibility."},{name:"Boltframe",type:"Ranged / Automatic Crossbow",damage:"1d6",desc:"An automatic crossbow with a mechanical reload system, silent and repetitive, built specifically for narrow corridors where making noise is a fatal mistake."}];
+
+
+const IMPLANTS=[
+  {name:"Weave",slots:1,absorb:2,penalty:"",desc:"A single-layer subdermal mesh woven beneath the skin. Thin enough to be undetectable. Absorbs 2 segments of incoming damage per slot before the Damage Clock is marked."},
+  {name:"Brace",slots:2,absorb:3,penalty:"",desc:"Reinforced plating fused to bone structures at key impact points. Absorbs 3 segments of incoming damage per slot. Slightly bulky under clothing."},
+  {name:"Shell",slots:3,absorb:4,penalty:"-1 METHOD",desc:"Full subdermal armor shell. Maximum protection at the cost of precision. Absorbs 4 segments of incoming damage per slot. -1 to all METHOD rolls while equipped."}
+];
+
+function buildImplantScreen(){
+  const list=document.getElementById('implant-cards');if(!list)return;
+  list.innerHTML='';
+  IMPLANTS.forEach((imp,i)=>{
+    const card=document.createElement('div');
+    card.className='weapon-card';
+    card.innerHTML=`<div class="weapon-card-name">${imp.name.toUpperCase()}</div>
+      <div class="weapon-card-type">${imp.slots} slot${imp.slots>1?'s':''} · absorbs ${imp.absorb} seg${imp.penalty?' · <span style="color:#ff9900">'+imp.penalty+'</span>':''}</div>
+      <div style="font-size:12px;color:rgba(0,255,136,0.5);margin-top:6px;line-height:1.6;">${imp.desc}</div>`;
+    card.onclick=()=>selectImplant(i);
+    list.appendChild(card);
+  });
+}
+function selectImplant(idx){
+  const imp=IMPLANTS[idx];
+  st.implantIdx=idx;st.implantSlots=imp.slots;st.implantAbsorb=imp.absorb;st.implantUsed=0;
+  st.implantMethodPenalty=imp.penalty&&imp.penalty.includes('METHOD')?-1:0;
+  buildSheet();
+  show('s-sheet');
+}
+const QUESTIONS=[{text:"The world around you changed. Nobody asked. Nobody resisted.\nWhat's your move?",opts:{A:{text:"Observe. Understand the new system before acting.",arc:"Sage"},B:{text:"Accept. Surviving requires flexibility.",arc:"Orphan"},C:{text:"Study how it works. Every structure has a breaking point.",arc:"Breaker"},D:{text:"I notice it, but I don't react. I stopped expecting things to stay the same.",arc:"Hollow"}}},{text:"Someone you don't know is in danger. You are the only one who saw it.\nWhat goes through your head first?",opts:{A:{text:"How can I help without exposing myself?",arc:"Orphan"},B:{text:"Who put this person in danger and why?",arc:"Sage"},C:{text:"I'm already moving.",arc:"Naive"},D:{text:"Before I think, I need to feel what my gut is telling me about this.",arc:"Oracle"}}},{text:"You discover a truth you always believed was false.\nYour immediate reaction:",opts:{A:{text:"I need to know who told this lie and why. Nothing is accidental.",arc:"Breaker"},B:{text:"Relief. At least now it makes sense.",arc:"Sage"},C:{text:"Fear. If this was a lie, what else is?",arc:"Hollow"},D:{text:"Shaken, but I'd rather know. Now I can choose differently.",arc:"Naive"}}},{text:"You lost something important. It isn't coming back.\nWhat do you do with that?",opts:{A:{text:"Hold it. Carry it as a reminder of what can't happen again.",arc:"Orphan"},B:{text:"Replace it. Loss is information, not a sentence.",arc:"Sage"},C:{text:"I feel like I was always going to lose this. Like it was never really mine to keep.",arc:"Oracle"},D:{text:"Surrender to it. Feeling the loss fully is the only way to honor what it was.",arc:"Hollow"}}},{text:"Someone asks you to act against what you believe, but it will protect the people you love.\nYou:",opts:{A:{text:"Do it. Principles are a luxury.",arc:"Orphan"},B:{text:"Do it. I've given up things I believed in before. This isn't different.",arc:"Hollow"},C:{text:"Refuse and find a way to make this choice unnecessary.",arc:"Breaker"},D:{text:"Don't do it. I'll never act against my principles.",arc:"Naive"}}},{text:"You are in a completely unknown environment.\nYour first action:",opts:{A:{text:"Map it. Entrances, exits, threats.",arc:"Sage"},B:{text:"Find someone. Alone is more dangerous.",arc:"Orphan"},C:{text:"Move. Staying still is worse.",arc:"Naive"},D:{text:"I watch how the others in the room react. People's behavior tells me more than the space itself.",arc:"Oracle"}}},{text:"Which phrase resonates most with you?",opts:{A:{text:"I've lost so much I learned to hold what's left.",arc:"Orphan"},B:{text:"I don't break the system. I show it was already broken.",arc:"Breaker"},C:{text:"I have hope it's still possible to overcome guilt and become better.",arc:"Naive"},D:{text:"I see patterns where people see coincidence.",arc:"Oracle"}}},{text:"What keeps you awake at night?",opts:{A:{text:"The feeling I could have done more. But I wake up and try again.",arc:"Naive"},B:{text:"The certainty that while people sleep, someone is building the next cage.",arc:"Breaker"},C:{text:"The silence. It's too large.",arc:"Hollow"},D:{text:"A question that still has no answer.",arc:"Oracle"}}}];
+
+const INV_SLOTS=['HEAD','BODY','HAND R','HAND L','ACCESSORY','FEET'];
+const BOOT_LINES=["TERMINAL DIAGNOSIS PROTOCOL","","Loading kernel modules...","WireBrain driver: OK","Synaptic relay: ACTIVE","DNA rewrite daemon: STANDBY","Signal scanner: READY","Desperto detection: ENABLED","","System ready. Awaiting command.",""];
+
+let st={scores:{},currentQ:0,charName:"",weaponIdx:null,classResult:"",pendingClass:"",arcResult:"",processing:false,signalLevel:0,currentId:"",clockMarked:0,implantIdx:0,implantSlots:0,implantAbsorb:0,implantUsed:0,implantMethodPenalty:0,inventory:{}};
+let imgState={img:null,offsetX:0,offsetY:0,scale:1,rawB64:""};
+
+function show(id){
+  document.querySelectorAll('.screen,.arc-reveal-screen,.sheet').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function switchTab(name){
+  const names=['main','abilities','notes','ref'];
+  document.querySelectorAll('.sheet-tab').forEach((t,i)=>{t.classList.toggle('active',names[i]===name);});
+  ['tab-main','tab-abilities','tab-notes','tab-ref'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el){
+      const isActive=names[i]===name;
+      el.classList.toggle('active',isActive);
+      el.style.display=isActive?'flex':'none';
+    }
+  });
+  window.scrollTo(0,0);
+}
+
+function handleBoot(e){
+  e.preventDefault();
+  const v=document.getElementById('boot-inp').value.trim().toLowerCase();
+  document.getElementById('boot-inp').value='';
+  if(v==='/run'||v==='run'){show('s-intro');}
+  else if(v){
+    const d=document.createElement('div');d.className='boot-ln';d.textContent="'"+v+"' not recognized. Try /run";
+    document.getElementById('boot-log').appendChild(d);
+  }
+}
+
+function initBoot(){
+  const log=document.getElementById('boot-log');log.innerHTML='';
+  BOOT_LINES.forEach((line,i)=>{
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.className='boot-ln'+(line==='TERMINAL DIAGNOSIS PROTOCOL'?' b':'');
+      d.textContent=line||' ';log.appendChild(d);
+    },i*120);
+  });
+}
+
+function showCodename(){
+  show('s-codename');
+  setTimeout(()=>document.getElementById('codename-inp').focus(),100);
+}
+
+function confirmCodename(){
+  const v=document.getElementById('codename-inp').value.trim();
+  if(!v)return;
+  st.charName=v.toUpperCase();
+  st.scores={Naive:0,Orphan:0,Breaker:0,Hollow:0,Sage:0,Oracle:0};
+  st.currentQ=0;
+  show('s-adapt');
+}
+
+function startQuiz(){renderQuestion(0);}
+
+function renderQuestion(idx){
+  show('s-quiz');
+  const q=QUESTIONS[idx];
+  const pct=((idx)/8)*100;
+  document.getElementById('quiz-bar').style.width=pct+'%';
+  document.getElementById('quiz-prog').textContent='QUESTION '+(idx+1)+' OF 8';
+  document.getElementById('quiz-q').textContent=q.text;
+  const optsEl=document.getElementById('quiz-opts');
+  optsEl.innerHTML='';
+  Object.entries(q.opts).forEach(([key,opt])=>{
+    const d=document.createElement('div');d.className='quiz-opt';
+    d.innerHTML=`<span class="quiz-opt-key">${key}</span><span class="quiz-opt-text">${opt.text}</span>`;
+    d.onclick=()=>{
+      if(d.classList.contains('selected'))return;
+      document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+      d.classList.add('selected');
+      st.scores[opt.arc]++;
+      st.currentQ=idx+1;
+      setTimeout(()=>{
+        if(st.currentQ<QUESTIONS.length){renderQuestion(st.currentQ);}
+        else{revealArchetype();}
+      },280);
+    };
+    optsEl.appendChild(d);
+  });
+}
+
+function showWeaponScreen(){
+  st.weaponIdx=null;
+  const optsEl=document.getElementById('weapon-opts');optsEl.innerHTML='';
+  const btn=document.getElementById('weapon-confirm');btn.style.opacity='0.3';
+  WEAPONS.forEach((w,i)=>{
+    const d=document.createElement('div');d.className='weapon-opt';
+    d.innerHTML=`<div class="weapon-name">${w.name.toUpperCase()}</div><div class="weapon-type">${w.type}</div>`;
+    d.onclick=()=>{
+      document.querySelectorAll('.weapon-opt').forEach(x=>x.classList.remove('selected'));
+      d.classList.add('selected');st.weaponIdx=i;btn.style.opacity='1';
+    };
+    optsEl.appendChild(d);
+  });
+  show('s-weapon');
+}
+
+function confirmWeapon(){
+  if(st.weaponIdx===null)return;
+  st.implantIdx=0;st.implantSlots=0;st.implantAbsorb=0;st.implantUsed=0;st.implantMethodPenalty=0;
+  buildSheet();
+}
+
+function revealArchetype(){
+  const winner=Object.keys(st.scores).reduce((a,b)=>st.scores[a]>=st.scores[b]?a:b);
+  st.arcResult=winner;const arc=ARCHETYPES[winner];
+  const nameEl=document.getElementById('a-name');
+  nameEl.textContent=arc.name;nameEl.style.animation='none';
+  requestAnimationFrame(()=>{nameEl.style.animation='';});
+  document.getElementById('a-attrs').innerHTML=Object.entries(arc.attrs).map(([k,v])=>`<div class="arc-attr"><b>${k} +${v}</b></div>`).join('');
+  document.getElementById('a-desc').textContent=arc.desc;
+  document.getElementById('a-passive').textContent=arc.passive;
+  buildClassGrid();
+  show('s-archetype');
+}
+
+function buildClassGrid(){
+  const grid=document.getElementById('cls-grid');grid.innerHTML='';
+  Object.entries(CLASSES).forEach(([name,cls])=>{
+    const d=document.createElement('div');d.className='cls-card';
+    d.onclick=()=>openClassDetail(name);
+    d.innerHTML=`<div>${CLASS_ICONS[name]||''}</div><div class="cls-card-info"><div class="cls-cname">${name.toUpperCase()}</div><div class="cls-crole">${cls.role}</div><div class="cls-csig">// ${cls.sig}</div></div>`;
+    grid.appendChild(d);
+  });
+}
+
+function buildExpandableAbilities(abilities,container){
+  abilities.forEach(a=>{
+    const block=document.createElement('div');block.className='ab-block';
+    const header=document.createElement('div');header.className='ab-header';
+    const nameEl=document.createElement('span');nameEl.className='ab-name-lbl';nameEl.textContent=a.name.toUpperCase();
+    const toggle=document.createElement('span');toggle.className='ab-toggle';toggle.textContent='[+]';
+    header.appendChild(nameEl);header.appendChild(toggle);
+    const body=document.createElement('div');body.className='ab-body collapsed';body.textContent=a.desc;
+    header.onclick=()=>{const c=body.classList.toggle('collapsed');toggle.textContent=c?'[+]':'[-]';};
+    block.appendChild(header);block.appendChild(body);container.appendChild(block);
+  });
+}
+
+function openClassDetail(name){
+  st.pendingClass=name;const cls=CLASSES[name];
+  const arc=ARCHETYPES[st.arcResult];
+  const maxAttr=Math.max(...Object.values(arc.attrs));
+  const threshold=cls.thresholdBase+maxAttr;
+  document.getElementById('cd-icon').innerHTML=CLASS_ICONS[name]||'';
+  document.getElementById('cd-name').textContent=name.toUpperCase();
+  document.getElementById('cd-role').textContent=cls.role;
+  document.getElementById('cd-stats').innerHTML=`<div class="cls-stat"><div class="cls-stat-label">HP</div><div class="cls-stat-val">${cls.hp}</div></div><div class="cls-stat"><div class="cls-stat-label">THRESHOLD</div><div class="cls-stat-val">${threshold}</div></div>`;
+  document.getElementById('cd-sig').textContent='Signature: '+cls.sig;
+  const abCont=document.getElementById('cd-abilities');abCont.innerHTML='';
+  buildExpandableAbilities(cls.abilities,abCont);
+  show('s-cls-detail');
+}
+
+function confirmClass(){st.classResult=st.pendingClass;showWeaponScreen();}
+
+function getMaxAttr(){return Math.max(...Object.values(ARCHETYPES[st.arcResult].attrs));}
+function getMaxAttrName(){return Object.entries(ARCHETYPES[st.arcResult].attrs).reduce((a,b)=>b[1]>a[1]?b:a)[0];}
+
+function buildSheet(){
+  const arc=ARCHETYPES[st.arcResult];const cls=CLASSES[st.classResult];const w=WEAPONS[st.weaponIdx];
+  const maxAttr=getMaxAttr();const maxAttrName=getMaxAttrName();const threshold=cls.thresholdBase+maxAttr;
+  st.clockMarked=0;st.implantUsed=0;st.inventory={};st.signalLevel=0;
+  const id=st.arcResult.substring(0,3).toUpperCase()+'-'+Math.random().toString(36).substring(2,6).toUpperCase()+'-'+Date.now().toString(36).toUpperCase().slice(-4);
+  st.currentId=id;
+
+  document.getElementById('sh-name').textContent=st.charName;
+  document.getElementById('sh-arc').textContent=arc.name+' // '+st.classResult.toUpperCase();
+  document.getElementById('sh-id').innerHTML=`<div class="unit-id-label">UNIT ID</div><div class="unit-id-val">${id}</div><div class="unit-id-save">SAVE THIS CODE</div>`;
+  document.getElementById('sh-cls-icon').innerHTML=CLASS_ICONS[st.classResult]||'';
+
+  // attrs + signal
+  const attrsRow=document.getElementById('sh-attrs-row');attrsRow.innerHTML='';
+  Object.entries(arc.attrs).forEach(([k,v])=>{
+    const pill=document.createElement('div');pill.className='attr-pill';
+    pill.innerHTML=`<span class="attr-key">${k}</span><span class="attr-val">+${v}</span>`;
+    attrsRow.appendChild(pill);
+  });
+  const sdiv=document.createElement('div');sdiv.className='signal-divider';attrsRow.appendChild(sdiv);
+  const slabel=document.createElement('div');slabel.className='signal-label-sm';slabel.textContent='SIGNAL';attrsRow.appendChild(slabel);
+  const spips=document.createElement('div');spips.className='signal-pips';spips.id='sh-signal';
+  for(let i=1;i<=5;i++){const p=document.createElement('div');p.className='sig-pip';p.textContent=i;p.onclick=()=>setSignal(i);spips.appendChild(p);}
+  attrsRow.appendChild(spips);
+  const syncEl=document.createElement('div');syncEl.className='sync-badge hidden';syncEl.id='sh-sync';syncEl.textContent='⚠ SYNC';attrsRow.appendChild(syncEl);
+
+  buildClock();
+  buildImplantSlots();
+  document.getElementById('sh-threshold').textContent=threshold;
+  const penalty=st.implantMethodPenalty||0;
+  document.getElementById('sh-threshold-sub').textContent='base '+cls.thresholdBase+' + '+maxAttrName+' +'+maxAttr+(penalty<0?' (METHOD '+penalty+')':'');
+  document.getElementById('sh-passive').textContent=arc.passive;
+
+  // inventory
+  st.inventory={'HAND R':w.name};
+  buildInventoryUI(st.inventory);
+
+  // abilities tab
+  const wBlock=document.getElementById('sh-weapon-block');wBlock.innerHTML='';
+  const wEl=document.createElement('div');wEl.className='ab-block';
+  const wHeader=document.createElement('div');wHeader.className='ab-header';
+  const wName=document.createElement('span');wName.className='ab-name-lbl';wName.textContent=w.name.toUpperCase();
+  const wMeta=document.createElement('span');wMeta.style.cssText='font-size:11px;color:rgba(0,255,136,0.38);font-family:Share Tech Mono,monospace;margin-left:8px;';wMeta.textContent=w.type+' · DMG '+w.damage;
+  const wToggle=document.createElement('span');wToggle.className='ab-toggle';wToggle.textContent='[+]';
+  wHeader.appendChild(wName);wHeader.appendChild(wMeta);wHeader.appendChild(wToggle);
+  const wBody=document.createElement('div');wBody.className='ab-body collapsed';wBody.textContent=w.desc;
+  wHeader.onclick=()=>{const c=wBody.classList.toggle('collapsed');wToggle.textContent=c?'[+]':'[-]';};
+  wEl.appendChild(wHeader);wEl.appendChild(wBody);wBlock.appendChild(wEl);
+  const abCont=document.getElementById('sh-abilities');abCont.innerHTML='';
+  buildExpandableAbilities(cls.abilities,abCont);
+
+  document.getElementById('sh-notes').value='';
+  resetPortraitSlot();
+  switchTab('main');
+
+  try{localStorage.setItem('bc_'+id,JSON.stringify({id,name:st.charName,arc:st.arcResult,cls:st.classResult,weaponIdx:st.weaponIdx,implantIdx:st.implantIdx||0,implantSlots:st.implantSlots||0,implantAbsorb:st.implantAbsorb||0,implantMethodPenalty:st.implantMethodPenalty||0,clock:0,implantUsed:0,signal:0,notes:'',inventory:st.inventory}));}catch(e){}
+  show('s-sheet');
+}
+
+function buildInventoryUI(currentInv){
+  const container=document.getElementById('sh-inventory');container.innerHTML='';
+  INV_SLOTS.forEach(slotName=>{
+    const slotEl=document.createElement('div');
+    const isEquipped=currentInv[slotName]&&currentInv[slotName].length>0;
+    slotEl.className='inv-slot'+(isEquipped?' equipped':'');
+    const label=document.createElement('div');label.className='inv-slot-label';label.textContent=slotName;
+    const item=document.createElement('div');
+    if(isEquipped){item.className='inv-slot-item';item.textContent=currentInv[slotName];}
+    else{item.className='inv-slot-item empty';item.textContent='empty';}
+    slotEl.appendChild(label);slotEl.appendChild(item);
+    slotEl.onclick=()=>editSlot(slotEl,slotName,item,currentInv[slotName]||'');
+    container.appendChild(slotEl);
+  });
+}
+
+function editSlot(slotEl,slotName,itemEl,currentVal){
+  if(slotEl.classList.contains('editing'))return;
+  slotEl.classList.add('editing');
+  const inp=document.createElement('input');
+  inp.className='inv-slot-inp';inp.value=currentVal;inp.placeholder='item name...';
+  itemEl.replaceWith(inp);inp.focus();
+  const done=()=>{
+    const newVal=inp.value.trim();
+    st.inventory[slotName]=newVal;
+    const newItem=document.createElement('div');
+    if(newVal){newItem.className='inv-slot-item';newItem.textContent=newVal;slotEl.classList.add('equipped');}
+    else{newItem.className='inv-slot-item empty';newItem.textContent='empty';slotEl.classList.remove('equipped');}
+    inp.replaceWith(newItem);slotEl.classList.remove('editing');
+    newItem.parentElement.onclick=()=>editSlot(slotEl,slotName,newItem,newVal);
+    persistSheet();
+  };
+  inp.onblur=done;
+  inp.onkeydown=(e)=>{if(e.key==='Enter'){e.preventDefault();done();}if(e.key==='Escape'){inp.value=currentVal;done();}};
+}
+
+function buildClock(){
+  const el=document.getElementById('sh-clock');if(!el)return;
+  el.innerHTML='';
+  for(let i=0;i<12;i++){
+    const seg=document.createElement('div');
+    seg.style.cssText='height:32px;border:1px solid rgba(0,255,136,0.3);cursor:pointer;transition:all 0.15s;border-radius:3px;';
+    if(i<st.clockMarked) seg.style.background=i<8?'rgba(0,255,136,0.7)':'rgba(255,60,60,0.8)';
+    seg.onclick=()=>{st.clockMarked=(st.clockMarked===i+1)?i:i+1;buildClock();persistSheet();};
+    el.appendChild(seg);
+  }
+}
+function buildImplantSlots(){
+  const row=document.getElementById('sh-implant-row');
+  const slotsEl=document.getElementById('sh-implant-slots');
+  if(!row||!slotsEl)return;
+  if(!st.implantSlots){row.style.display='none';return;}
+  row.style.display='flex';
+  slotsEl.innerHTML='';
+  for(let i=0;i<st.implantSlots;i++){
+    const s=document.createElement('div');
+    s.style.cssText='width:36px;height:36px;border:1px solid rgba(0,255,136,0.4);cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(0,255,136,0.5);font-family:Share Tech Mono,monospace;';
+    if(i<(st.implantUsed||0)){s.style.background='rgba(0,255,136,0.15)';s.textContent='\u2717';}
+    s.onclick=()=>{st.implantUsed=(st.implantUsed||0)===i+1?i:i+1;buildImplantSlots();persistSheet();};
+    slotsEl.appendChild(s);
+  }
+}
+
+function setSignal(n){
+  st.signalLevel=st.signalLevel===n?0:n;
+  document.querySelectorAll('.sig-pip').forEach((p,i)=>{p.classList.remove('active','danger');if(i<st.signalLevel)p.classList.add(st.signalLevel>=5?'danger':'active');});
+  const sync=document.getElementById('sh-sync');
+  if(sync)st.signalLevel>=5?sync.classList.remove('hidden'):sync.classList.add('hidden');
+  persistSheet();
+}
+
+function persistSheet(){
+  if(!st.currentId)return;
+  try{const raw=localStorage.getItem('bc_'+st.currentId);if(!raw)return;const d=JSON.parse(raw);d.clock=st.clockMarked;d.implantUsed=st.implantUsed||0;d.signal=st.signalLevel;d.notes=document.getElementById('sh-notes').value||'';d.inventory=st.inventory;localStorage.setItem('bc_'+st.currentId,JSON.stringify(d));}catch(e){}
+}
+
+function resetPortraitSlot(){
+  imgState={img:null,offsetX:0,offsetY:0,scale:1,rawB64:"",lastTouchDist:0,dragging:false,lastX:0,lastY:0};
+  const canvas=document.getElementById('portrait-canvas');canvas.style.display='none';
+  document.getElementById('portrait-placeholder').style.display='block';
+  document.getElementById('portrait-controls').style.display='none';
+  const slot=document.getElementById('portrait-slot');
+  slot.onmousedown=(e)=>{
+    if(!imgState.img)return;
+    e.preventDefault();
+    imgState.dragging=true;
+    imgState.lastX=e.clientX;
+    imgState.lastY=e.clientY;
+  };
+  window.onmousemove=(e)=>{
+    if(!imgState.img||!imgState.dragging)return;
+    imgState.offsetX+=e.clientX-imgState.lastX;
+    imgState.offsetY+=e.clientY-imgState.lastY;
+    imgState.lastX=e.clientX;
+    imgState.lastY=e.clientY;
+    drawPortrait();
+  };
+  window.onmouseup=()=>{
+    if(imgState.dragging&&imgState.img)savePortrait();
+    imgState.dragging=false;
+  };
+  slot.onwheel=(e)=>{
+    if(!imgState.img)return;
+    e.preventDefault();
+    const delta=e.deltaY<0?1.08:0.92;
+    imgState.scale=Math.max(0.2,Math.min(5,imgState.scale*delta));
+    drawPortrait();
+    savePortrait();
+  };
+  // touch pan
+  slot.ontouchstart=(e)=>{
+    if(!imgState.img){return;} // allow click to bubble for file picker
+    e.preventDefault();
+    imgState.dragging=false;
+    if(e.touches.length===1){
+      imgState.dragging=true;
+      imgState.lastX=e.touches[0].clientX;
+      imgState.lastY=e.touches[0].clientY;
+    }
+    if(e.touches.length===2){
+      imgState.dragging=false;
+      imgState.lastTouchDist=Math.hypot(
+        e.touches[0].clientX-e.touches[1].clientX,
+        e.touches[0].clientY-e.touches[1].clientY
+      );
+    }
+  };
+  slot.ontouchmove=(e)=>{
+    if(!imgState.img)return;
+    e.preventDefault();
+    if(e.touches.length===1&&imgState.dragging){
+      const dx=e.touches[0].clientX-imgState.lastX;
+      const dy=e.touches[0].clientY-imgState.lastY;
+      imgState.offsetX+=dx;imgState.offsetY+=dy;
+      imgState.lastX=e.touches[0].clientX;
+      imgState.lastY=e.touches[0].clientY;
+      drawPortrait();
+    }
+    if(e.touches.length===2&&imgState.lastTouchDist>0){
+      const dist=Math.hypot(
+        e.touches[0].clientX-e.touches[1].clientX,
+        e.touches[0].clientY-e.touches[1].clientY
+      );
+      const ratio=dist/imgState.lastTouchDist;
+      imgState.scale=Math.max(0.2,Math.min(5,imgState.scale*ratio));
+      imgState.lastTouchDist=dist;
+      drawPortrait();
+    }
+  };
+  slot.ontouchend=(e)=>{
+    imgState.dragging=false;
+    if(e.touches.length<2)imgState.lastTouchDist=0;
+    if(imgState.img)savePortrait();
+  };
+}
+
+function triggerPortrait(){document.getElementById('portrait-file').click();}
+
+function handlePortrait(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(ev)=>{
+    imgState.rawB64=ev.target.result;
+    const image=new Image();
+    image.onload=()=>{
+      imgState.img=image;imgState.offsetX=0;imgState.offsetY=0;
+      const slot=document.getElementById('portrait-slot');
+      imgState.scale=Math.min(slot.offsetWidth/image.width,slot.offsetHeight/image.height);
+      document.getElementById('portrait-placeholder').style.display='none';
+      const canvas=document.getElementById('portrait-canvas');canvas.style.display='block';
+      drawPortrait();
+      document.getElementById('portrait-controls').style.display='flex';
+      savePortrait();
+    };
+    image.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function drawPortrait(){
+  const canvas=document.getElementById('portrait-canvas');
+  const slot=document.getElementById('portrait-slot');
+  canvas.width=slot.offsetWidth||300;canvas.height=slot.offsetHeight||200;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.save();ctx.translate(canvas.width/2+imgState.offsetX,canvas.height/2+imgState.offsetY);
+  ctx.scale(imgState.scale,imgState.scale);
+  ctx.drawImage(imgState.img,-imgState.img.width/2,-imgState.img.height/2);
+  ctx.restore();
+}
+
+function resetPortrait(){
+  if(!imgState.img)return;
+  const slot=document.getElementById('portrait-slot');
+  imgState.scale=Math.min(slot.offsetWidth/imgState.img.width,slot.offsetHeight/imgState.img.height);
+  imgState.offsetX=0;imgState.offsetY=0;drawPortrait();savePortrait();
+}
+
+function savePortrait(){
+  if(!st.currentId||!imgState.rawB64)return;
+  try{localStorage.setItem('bc_img_'+st.currentId,JSON.stringify({b64:imgState.rawB64,offsetX:imgState.offsetX,offsetY:imgState.offsetY,scale:imgState.scale}));}catch(e){}
+}
+
+function showRetrieve(){show('s-retrieve');}
+
+function loadUnit(){
+  const id=document.getElementById('ret-inp').value.trim().toUpperCase();if(!id)return;
+  let d=null;try{const raw=localStorage.getItem('bc_'+id);if(raw)d=JSON.parse(raw);}catch(e){}
+  if(!d){document.getElementById('ret-err').classList.remove('hidden');return;}
+  document.getElementById('ret-err').classList.add('hidden');
+  st.charName=d.name;st.arcResult=d.arc;st.classResult=d.cls;st.weaponIdx=d.weaponIdx;st.currentId=id;st.inventory=d.inventory||{};
+  buildSheet();
+  if(d.inventory)buildInventoryUI(d.inventory);
+  st.clockMarked=d.clock||0;st.implantUsed=d.implantUsed||0;st.implantIdx=d.implantIdx||0;st.implantSlots=d.implantSlots||0;st.implantAbsorb=d.implantAbsorb||0;st.implantMethodPenalty=d.implantMethodPenalty||0;
+  buildClock();buildImplantSlots();
+  if(d.signal&&d.signal>0)setSignal(d.signal);
+  if(d.notes)document.getElementById('sh-notes').value=d.notes;
+  try{const imgRaw=localStorage.getItem('bc_img_'+id);if(imgRaw){const saved=JSON.parse(imgRaw);imgState.rawB64=saved.b64;const image=new Image();image.onload=()=>{imgState.img=image;imgState.offsetX=saved.offsetX||0;imgState.offsetY=saved.offsetY||0;imgState.scale=saved.scale||1;document.getElementById('portrait-placeholder').style.display='none';const canvas=document.getElementById('portrait-canvas');canvas.style.display='block';drawPortrait();document.getElementById('portrait-controls').style.display='flex';};image.src=saved.b64;}}catch(e){}
+}
+
+function restart(){show('s-intro');}
+initBoot();
+function bindBootRun(){
+  const runBtn=document.getElementById('boot-run-btn');
+  if(runBtn){
+    const run=function(){show('s-intro');};
+    runBtn.addEventListener('touchend',function(e){e.preventDefault();run();},false);
+    runBtn.addEventListener('click',run);
+  }
+}
+bindBootRun();
+document.addEventListener('DOMContentLoaded',bindBootRun);
+</script>
+</body>
+</html>
